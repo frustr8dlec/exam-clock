@@ -15,6 +15,10 @@
             --border: #e2e8f0;
             --clock-hand: #0f172a;
             --second-hand: #dc2626;
+            --btn-secondary: #475569;
+            --btn-secondary-hover: #334155;
+            --btn-announce: #059669;
+            --btn-announce-hover: #047857;
         }
 
         * {
@@ -37,7 +41,7 @@
             display: grid;
             grid-template-columns: 350px 1fr;
             min-height: 100vh;
-            transition: grid-template-columns 0.3s ease;
+            transition: grid-template-columns 0.4s ease;
         }
 
         .container.presentation-mode {
@@ -53,7 +57,7 @@
             flex-direction: column;
             gap: 1.5rem;
             overflow-y: auto;
-            transition: transform 0.3s ease, padding 0.3s ease;
+            transition: transform 0.4s ease, padding 0.4s ease;
         }
 
         .container.presentation-mode .config-panel {
@@ -68,6 +72,9 @@
             color: var(--accent);
             border-bottom: 2px solid var(--border);
             padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .input-group {
@@ -104,6 +111,7 @@
             gap: 3rem;
             justify-content: center;
             position: relative;
+            overflow-x: hidden;
         }
 
         /* Controls Floating Bar */
@@ -112,6 +120,8 @@
             top: 1.5rem;
             right: 1.5rem;
             z-index: 10;
+            display: flex;
+            gap: 1rem;
         }
 
         .btn {
@@ -123,15 +133,19 @@
             font-weight: 600;
             border-radius: 0.375rem;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .btn:hover {
-            background-color: var(--accent-hover);
-        }
+        .btn:hover { background-color: var(--accent-hover); }
+        
+        .btn.secondary { background-color: var(--btn-secondary); }
+        .btn.secondary:hover { background-color: var(--btn-secondary-hover); }
 
-        /* Right-Side Content Split (Clocks vs Info) */
+        .btn.announce { background-color: var(--btn-announce); }
+        .btn.announce:hover { background-color: var(--btn-announce-hover); }
+
+        /* Board Content Layout */
         .board-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -140,6 +154,13 @@
             max-width: 1200px;
             margin: 0 auto;
             width: 100%;
+            transition: max-width 0.4s ease, gap 0.4s ease;
+        }
+
+        /* Enlarge Board Content in Presentation Mode */
+        .container.presentation-mode .board-content {
+            max-width: 1600px;
+            gap: 5rem;
         }
 
         /* Clocks Section */
@@ -158,6 +179,13 @@
             background: var(--card-bg);
             border-radius: 50%;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        /* Enlarge Analogue Clock in Presentation Mode */
+        .container.presentation-mode .analogue-clock {
+            width: 440px;
+            height: 440px;
         }
 
         .clock-face-numbers {
@@ -189,6 +217,13 @@
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
             letter-spacing: 2px;
             border: 1px solid var(--border);
+            transition: font-size 0.4s ease, padding 0.4s ease;
+        }
+
+        /* Enlarge Digital Clock in Presentation Mode */
+        .container.presentation-mode .digital-clock {
+            font-size: 5rem;
+            padding: 1rem 3rem;
         }
 
         /* Headings & Information Section */
@@ -201,6 +236,13 @@
             border-radius: 1rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border);
+            transition: padding 0.4s ease, gap 0.4s ease;
+        }
+
+        /* Enlarge Info Section in Presentation Mode */
+        .container.presentation-mode .info-column {
+            padding: 3.5rem;
+            gap: 2.5rem;
         }
 
         .info-item {
@@ -220,7 +262,10 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin-bottom: 0.25rem;
+            transition: font-size 0.4s ease;
         }
+
+        .container.presentation-mode .info-heading { font-size: 1.1rem; }
 
         .info-value {
             font-size: 1.5rem;
@@ -228,7 +273,10 @@
             color: var(--text-main);
             min-height: 2.25rem;
             word-break: break-word;
+            transition: font-size 0.4s ease;
         }
+
+        .container.presentation-mode .info-value { font-size: 2.25rem; min-height: 3rem; }
 
         /* Highlights for critical time information */
         .time-grid {
@@ -240,51 +288,25 @@
             margin-top: 0.5rem;
         }
 
-        .time-grid .info-item {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .time-grid .info-value {
-            font-size: 1.35rem;
-            font-family: monospace;
-        }
+        .time-grid .info-item { border-bottom: none; padding-bottom: 0; }
+        .time-grid .info-value { font-size: 1.35rem; font-family: monospace; }
+        
+        .container.presentation-mode .time-grid .info-value { font-size: 1.85rem; }
 
         /* Responsive Breakpoints */
         @media (max-width: 1024px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-            .config-panel {
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-            }
-            .container.presentation-mode .config-panel {
-                transform: translateY(-100%);
-                height: 0;
-                padding: 0;
-            }
-            .board-content {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            .display-board {
-                padding: 2rem 1rem;
-            }
+            .container { grid-template-columns: 1fr; }
+            .config-panel { border-right: none; border-bottom: 1px solid var(--border); }
+            .container.presentation-mode .config-panel { transform: translateY(-100%); height: 0; padding: 0; }
+            .board-content { grid-template-columns: 1fr; gap: 2rem; }
+            .display-board { padding: 4rem 1rem 2rem 1rem; }
         }
 
         @media (max-width: 640px) {
-            .time-grid {
-                grid-template-columns: 1fr;
-                gap: 1.25rem;
-            }
-            .digital-clock {
-                font-size: 2.5rem;
-            }
-            .analogue-clock {
-                width: 260px;
-                height: 260px;
-            }
+            .time-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+            .digital-clock { font-size: 2.5rem; }
+            .analogue-clock { width: 260px; height: 260px; }
+            .top-bar { flex-direction: column; right: 1rem; top: 1rem; gap: 0.5rem; }
         }
     </style>
 </head>
@@ -293,7 +315,10 @@
     <div class="container" id="mainContainer">
         
         <div class="config-panel">
-            <div class="panel-title">Exam Configuration</div>
+            <div class="panel-title">
+                Exam Setup
+                <button class="btn secondary" id="copyLinkBtn" onclick="copyShareableLink()" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">🔗 Copy Link</button>
+            </div>
             
             <div class="input-group">
                 <label for="inputCentre">Centre Number</label>
@@ -328,6 +353,7 @@
 
         <div class="display-board">
             <div class="top-bar">
+                <button class="btn announce" id="announceBtn" onclick="announceRegulations()">🔊 Read Regulations</button>
                 <button class="btn" id="toggleModeBtn" onclick="togglePresentationMode()">Presentation Mode</button>
             </div>
 
@@ -432,14 +458,100 @@
             extended: document.getElementById('dispExtended')
         };
 
-        // Live binding inputs directly to displays
+        // 1. Live binding inputs directly to displays
         Object.keys(inputs).forEach(key => {
             inputs[key].addEventListener('input', (e) => {
                 displays[key].textContent = e.target.value.trim() || "—";
             });
         });
 
-        // Toggle clean presentation layout
+        // 2. Load parameters from URL on Startup (For shared links)
+        function loadFromURLParams() {
+            const params = new URLSearchParams(window.location.search);
+            Object.keys(inputs).forEach(key => {
+                if (params.has(key)) {
+                    const val = params.get(key);
+                    inputs[key].value = val;
+                    displays[key].textContent = val || "—";
+                }
+            });
+        }
+
+        // 3. Generate and copy Shareable Link
+        function copyShareableLink() {
+            const params = new URLSearchParams();
+            let hasData = false;
+            
+            Object.keys(inputs).forEach(key => {
+                if (inputs[key].value.trim() !== '') {
+                    params.set(key, inputs[key].value.trim());
+                    hasData = true;
+                }
+            });
+
+            // Construct full URL
+            const cleanUrl = window.location.origin + window.location.pathname;
+            const finalUrl = hasData ? `${cleanUrl}?${params.toString()}` : cleanUrl;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(finalUrl).then(() => {
+                const btn = document.getElementById('copyLinkBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = "✅ Copied!";
+                btn.style.backgroundColor = "var(--btn-announce)";
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.backgroundColor = "";
+                }, 2000);
+            }).catch(err => {
+                alert("Failed to copy link. Check browser permissions.");
+            });
+        }
+
+        // 4. Text-To-Speech Regulations
+        let isSpeaking = false;
+        function announceRegulations() {
+            if (!('speechSynthesis' in window)) {
+                alert("Your browser does not support text-to-speech functionality.");
+                return;
+            }
+
+            const btn = document.getElementById('announceBtn');
+
+            // If already speaking, toggle off
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                btn.innerHTML = "🔊 Read Regulations";
+                btn.style.backgroundColor = "";
+                isSpeaking = false;
+                return;
+            }
+
+            // Standard JCQ/GCSE Exam Room announcement text
+            const text = "Attention all candidates. The exam regulations for this session are now in effect. You must not have on or near you any mobile phones, smartwatches, or any internet-enabled devices. Possession of unauthorized items is a serious offense and may result in disqualification from your examination and your overall qualification. If you have any unauthorized items, please raise your hand and hand them to an invigilator immediately. Please ensure your centre number, candidate number, and signature are correctly filled out on your paper. You may not communicate with, ask for help from, or look at the work of any other candidate. The start and finish times are displayed on the board. You may now start your examination. We wish you the best of luck.";
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.85; // Slightly slower for clear, authoritative reading
+            utterance.pitch = 1;
+            utterance.volume = 1;
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+                btn.innerHTML = "⏹ Stop Announcement";
+                btn.style.backgroundColor = "var(--second-hand)"; // Turn red to indicate stop
+            };
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                btn.innerHTML = "🔊 Read Regulations";
+                btn.style.backgroundColor = "";
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // 5. Toggle clean presentation layout (Now scales up elements)
         function togglePresentationMode() {
             const container = document.getElementById('mainContainer');
             const btn = document.getElementById('toggleModeBtn');
@@ -452,17 +564,17 @@
             }
         }
 
-        // Initialize and maintain Clocks and Date tracking
+        // 6. Initialize and maintain Clocks and Date tracking
         function updateTime() {
             const now = new Date();
 
-            // 1. Digital Clock Formatting
+            // Digital Clock Formatting
             const hrs = String(now.getHours()).padStart(2, '0');
             const mins = String(now.getMinutes()).padStart(2, '0');
             const secs = String(now.getSeconds()).padStart(2, '0');
             document.getElementById('digitalClockDisplay').textContent = `${hrs}:${mins}:${secs}`;
 
-            // 2. Analogue Clock Mathematical Rotations
+            // Analogue Clock Mathematical Rotations
             const hrHand = document.getElementById('hour');
             const minHand = document.getElementById('minute');
             const secHand = document.getElementById('second');
@@ -475,12 +587,13 @@
             minHand.style.transform = `rotate(${minutesDegrees}deg)`;
             hrHand.style.transform = `rotate(${hoursDegrees}deg)`;
 
-            // 3. Keep Auto-filled Date Active
+            // Keep Auto-filled Date Active
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             displays.date.textContent = now.toLocaleDateString(undefined, options);
         }
 
-        // Run clock synchronization logic instantly and lock a repeating sequence
+        // Run setup logic
+        loadFromURLParams();
         setInterval(updateTime, 1000);
         updateTime();
     </script>
